@@ -11,18 +11,24 @@ export default function Navigation() {
   const [activeSection, setActiveSection] = useState("hero");
 
   useEffect(() => {
+    const sections = document.querySelectorAll("[data-section]");
+    let ticking = false;
+
     const onScroll = () => {
       setScrolled(window.scrollY > 60);
-
-      const sections = document.querySelectorAll("[data-section]");
-      let current = "hero";
-      sections.forEach((section) => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= window.innerHeight / 3) {
-          current = section.getAttribute("data-section") || "hero";
-        }
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        let current = "hero";
+        sections.forEach((section) => {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= window.innerHeight / 3) {
+            current = section.getAttribute("data-section") || "hero";
+          }
+        });
+        setActiveSection(current);
+        ticking = false;
       });
-      setActiveSection(current);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);

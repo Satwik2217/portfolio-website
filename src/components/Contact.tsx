@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowUpRight, GitBranch, Globe, Mail } from "lucide-react";
 import { personalInfo, socialLinks } from "@/data/portfolio";
-import SatwikCharacter from "@/components/character/SatwikCharacter";
+import GamingCharacter from "@/components/GamingCharacter";
 
 export default function Contact() {
   const ref = useRef(null);
@@ -77,14 +77,14 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Right: Character */}
+          {/* Right: Gaming Character */}
           <motion.div
             className="flex justify-center lg:justify-end"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <SatwikCharacter state="celebrating" size={280} interactive={true} />
+            <GamingCharacter size={280} />
           </motion.div>
         </motion.div>
       </div>

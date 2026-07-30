@@ -1,9 +1,29 @@
 "use client";
 import { useRef, useEffect } from "react";
 
+function useCanvasVisibility() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isVisibleRef = useRef(true);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+      { threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return { containerRef, isVisibleRef };
+}
+
 function ContractGuardVisual() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { containerRef, isVisibleRef } = useCanvasVisibility();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -30,6 +50,8 @@ function ContractGuardVisual() {
 
     let animId: number;
     const animate = () => {
+      animId = requestAnimationFrame(animate);
+      if (!isVisibleRef.current) return;
       ctx.clearRect(0, 0, rect.width, rect.height);
       ctx.fillStyle = "#161616";
       ctx.fillRect(0, 0, rect.width, rect.height);
@@ -97,19 +119,23 @@ function ContractGuardVisual() {
         ctx.fillStyle = `rgba(232, 89, 74, ${p.life * 0.4})`;
         ctx.fill();
       }
-
-      animId = requestAnimationFrame(animate);
     };
     animate();
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  return <canvas ref={canvasRef} className="w-full h-full" />;
+  return (
+    <div ref={containerRef} className="w-full h-full">
+      <canvas ref={canvasRef} className="w-full h-full" />
+    </div>
+  );
 }
 
 function CarbonOptimizerVisual() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { containerRef, isVisibleRef } = useCanvasVisibility();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -137,6 +163,8 @@ function CarbonOptimizerVisual() {
     let animId: number;
 
     const animate = () => {
+      animId = requestAnimationFrame(animate);
+      if (!isVisibleRef.current) return;
       time += 0.01;
       ctx.clearRect(0, 0, rect.width, rect.height);
       ctx.fillStyle = "#161616";
@@ -158,34 +186,31 @@ function CarbonOptimizerVisual() {
         ctx.stroke();
       }
 
-      agents.forEach((agent, i) => {
+      const agentsLen = agents.length;
+      for (let i = 0; i < agentsLen; i++) {
+        const agent = agents[i];
         agent.x += agent.vx;
         agent.y += agent.vy;
 
-        // Bounce off walls
         if (agent.x < 5 || agent.x > rect.width - 5) agent.vx *= -1;
         if (agent.y < 5 || agent.y > rect.height - 5) agent.vy *= -1;
 
-        // Slow drift toward center (optimization)
         const cx = rect.width / 2;
         const cy = rect.height / 2;
         agent.vx += (cx - agent.x) * 0.0003;
         agent.vy += (cy - agent.y) * 0.0003;
 
-        // Speed limit
         const speed = Math.sqrt(agent.vx * agent.vx + agent.vy * agent.vy);
         if (speed > 1.5) {
           agent.vx = (agent.vx / speed) * 1.5;
           agent.vy = (agent.vy / speed) * 1.5;
         }
 
-        // Draw agent
         ctx.beginPath();
         ctx.arc(agent.x, agent.y, agent.size, 0, Math.PI * 2);
         ctx.fillStyle = agent.color;
         ctx.fill();
 
-        // Glow
         const gradient = ctx.createRadialGradient(agent.x, agent.y, 0, agent.x, agent.y, agent.size * 3);
         gradient.addColorStop(0, agent.color.replace(")", ", 0.15)").replace("rgb", "rgba"));
         gradient.addColorStop(1, "transparent");
@@ -194,9 +219,9 @@ function CarbonOptimizerVisual() {
         ctx.arc(agent.x, agent.y, agent.size * 3, 0, Math.PI * 2);
         ctx.fill();
 
-        // Connect nearby agents
-        agents.forEach((other, j) => {
-          if (j <= i) return;
+        // Connect nearby agents (j > i to avoid duplicate checks)
+        for (let j = i + 1; j < agentsLen; j++) {
+          const other = agents[j];
           const dx = agent.x - other.x;
           const dy = agent.y - other.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
@@ -208,12 +233,12 @@ function CarbonOptimizerVisual() {
             ctx.lineTo(other.x, other.y);
             ctx.stroke();
           }
-        });
+        }
 
         if (Math.random() < 0.02) {
           particles.push({ x: agent.x, y: agent.y, life: 1 });
         }
-      });
+      }
 
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
@@ -224,19 +249,23 @@ function CarbonOptimizerVisual() {
         ctx.fillStyle = `rgba(58, 157, 110, ${p.life * 0.3})`;
         ctx.fill();
       }
-
-      animId = requestAnimationFrame(animate);
     };
     animate();
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  return <canvas ref={canvasRef} className="w-full h-full" />;
+  return (
+    <div ref={containerRef} className="w-full h-full">
+      <canvas ref={canvasRef} className="w-full h-full" />
+    </div>
+  );
 }
 
 function EventHorizonPreview() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { containerRef, isVisibleRef } = useCanvasVisibility();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -252,7 +281,7 @@ function EventHorizonPreview() {
     const cx = rect.width / 2;
     const cy = rect.height / 2;
 
-    const particles = Array.from({ length: 120 }, (_, i) => {
+    const particles = Array.from({ length: 100 }, (_, i) => {
       const angle = Math.random() * Math.PI * 2;
       const radius = 20 + Math.random() * Math.min(rect.width, rect.height) * 0.4;
       return {
@@ -277,6 +306,8 @@ function EventHorizonPreview() {
 
     let animId: number;
     const animate = () => {
+      animId = requestAnimationFrame(animate);
+      if (!isVisibleRef.current) return;
       ctx.fillStyle = "#161616";
       ctx.fillRect(0, 0, rect.width, rect.height);
 
@@ -308,14 +339,16 @@ function EventHorizonPreview() {
         ctx.fillStyle = `rgba(232, 89, 74, ${alpha * 0.6})`;
         ctx.fill();
       });
-
-      animId = requestAnimationFrame(animate);
     };
     animate();
     return () => { cancelAnimationFrame(animId); canvas.removeEventListener("mousemove", onMove); };
   }, []);
 
-  return <canvas ref={canvasRef} className="w-full h-full" />;
+  return (
+    <div ref={containerRef} className="w-full h-full">
+      <canvas ref={canvasRef} className="w-full h-full" />
+    </div>
+  );
 }
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {

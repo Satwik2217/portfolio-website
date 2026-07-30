@@ -1,16 +1,12 @@
 "use client";
-import { useRef, useLayoutEffect, useState, useEffect } from "react";
-import { useInView } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { techStack } from "@/data/portfolio";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function HorizontalScroll() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-5%" });
+  const [scrollWidth, setScrollWidth] = useState(0);
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.matchMedia("(max-width: 768px)").matches : false
   );
@@ -22,35 +18,20 @@ export default function HorizontalScroll() {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
-  useLayoutEffect(() => {
-    if (typeof window === "undefined") return;
+  useEffect(() => {
     if (isMobile) return;
-
     const track = trackRef.current;
-    const section = sectionRef.current;
-    if (!track || !section) return;
+    if (!track) return;
+    const sw = track.scrollWidth - window.innerWidth;
+    setScrollWidth(Math.max(0, sw));
+  }, [isMobile]);
 
-    const ctx = gsap.context(() => {
-      const scrollWidth = track.scrollWidth - window.innerWidth;
-      if (scrollWidth <= 0) return;
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
 
-      gsap.to(track, {
-        x: -scrollWidth,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () => `+=${scrollWidth + window.innerHeight * 0.5}`,
-          pin: true,
-          anticipatePin: 1,
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
-      });
-    });
-
-    return () => ctx.revert();
-  }, [isInView, isMobile]);
+  const x = useTransform(scrollYProgress, [0, 1], [0, isMobile ? 0 : -scrollWidth || 0]);
 
   if (isMobile) {
     return (
@@ -79,9 +60,10 @@ export default function HorizontalScroll() {
       style={{ height: "200vh" }}
     >
       <div className="sticky top-0 left-0 h-screen flex items-center overflow-hidden">
-        <div
+        <motion.div
           ref={trackRef}
           className="flex items-center gap-16 px-10 will-change-transform"
+          style={{ x }}
         >
           <span className="text-xs tracking-[0.25em] text-muted font-mono whitespace-nowrap mr-8">
             MY STACK
@@ -94,7 +76,7 @@ export default function HorizontalScroll() {
               <span className="w-2 h-2 rounded-full bg-accent/30" />
             </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

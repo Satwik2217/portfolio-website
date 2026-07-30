@@ -3,7 +3,7 @@ import { useRef, useCallback, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowDown, GitBranch, Globe, Mail, FileText } from "lucide-react";
 import { personalInfo, socialLinks } from "@/data/portfolio";
-import SatwikCharacter from "@/components/character/SatwikCharacter";
+import WrestlingScene from "@/components/WrestlingScene";
 
 function MagneticWrap({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -169,18 +169,20 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Right: Character */}
+          {/* Right: Wrestling Scene */}
           <motion.div
             className="order-1 lg:order-2 flex justify-center lg:justify-end"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ delay: 0.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <SatwikCharacter
-              state="waving"
-              size={charSize}
-              interactive={true}
-            />
+            <div
+              className="relative shrink-0 rounded-full overflow-hidden shadow-2xl shadow-accent/10"
+              style={{ width: charSize, height: charSize }}
+            >
+              <div className="absolute inset-0 rounded-full ring-2 ring-accent/30 ring-offset-2 ring-offset-bg z-10 pointer-events-none" />
+              <WrestlingScene size={charSize} />
+            </div>
           </motion.div>
         </div>
 

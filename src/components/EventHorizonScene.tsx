@@ -9,6 +9,18 @@ export default function EventHorizonScene() {
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const particlesRef = useRef<Particle[]>([]);
   const animRef = useRef<number>(0);
+  const isVisibleRef = useRef(true);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+      { threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -30,7 +42,7 @@ export default function EventHorizonScene() {
     // Init particles
     const w = canvas.width;
     const h = canvas.height;
-    const count = Math.min(200, Math.floor((w * h) / 3000));
+    const count = Math.min(180, Math.floor((w * h) / 3500));
 
     particlesRef.current = Array.from({ length: count }, () => {
       const angle = Math.random() * Math.PI * 2;
@@ -55,8 +67,9 @@ export default function EventHorizonScene() {
       };
     });
 
-    let lastBurst = 0;
     const animate = (time: number) => {
+      animRef.current = requestAnimationFrame(animate);
+      if (!isVisibleRef.current) return;
       if (!canvas || !ctx) return;
       const rect = canvas.getBoundingClientRect();
       const w = rect.width;
@@ -69,7 +82,10 @@ export default function EventHorizonScene() {
       ctx.fillStyle = "#0A0808";
       ctx.fillRect(0, 0, w, h);
 
-      // Subtle background glow
+      const particles = particlesRef.current;
+      const len = particles.length;
+
+      // Background glows (only if visible)
       const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 120);
       glow.addColorStop(0, "rgba(232, 89, 74, 0.04)");
       glow.addColorStop(1, "transparent");
@@ -78,7 +94,6 @@ export default function EventHorizonScene() {
       ctx.arc(cx, cy, 120, 0, Math.PI * 2);
       ctx.fill();
 
-      // Second glow
       const glow2 = ctx.createRadialGradient(cx, cy, 0, cx, cy, 200);
       glow2.addColorStop(0, "rgba(74, 127, 224, 0.02)");
       glow2.addColorStop(1, "transparent");
@@ -90,24 +105,22 @@ export default function EventHorizonScene() {
       const mousePullX = (mx - 0.5) * 80;
       const mousePullY = (my - 0.5) * 80;
 
-      particlesRef.current.forEach((p) => {
-        // Orbit
+      for (let i = 0; i < len; i++) {
+        const p = particles[i];
+
         p.angle += p.speed;
 
-        // Mouse influence
         const dx = (mx * w) - p.x;
         const dy = (my * h) - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         const force = Math.min(1, 120 / (dist + 30));
 
-        // Target position = orbit + mouse pull
         const orbitX = cx + Math.cos(p.angle) * p.radius;
         const orbitY = cy + Math.sin(p.angle) * p.radius;
 
         p.targetX = orbitX + mousePullX * force * 0.15;
         p.targetY = orbitY + mousePullY * force * 0.15;
 
-        // Spring toward target
         p.vx += (p.targetX - p.x) * 0.03;
         p.vy += (p.targetY - p.y) * 0.03;
         p.vx *= 0.95;
@@ -115,13 +128,11 @@ export default function EventHorizonScene() {
         p.x += p.vx;
         p.y += p.vy;
 
-        // Brightness based on distance from mouse
         const distToMouse = Math.sqrt(
           Math.pow((mx * w) - p.x, 2) + Math.pow((my * h) - p.y, 2)
         );
         const brightness = 0.3 + (1 - Math.min(1, distToMouse / 200)) * 0.7;
 
-        // Draw particle
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * (0.8 + Math.sin(time / 800 + p.phase) * 0.2), 0, Math.PI * 2);
 
@@ -129,9 +140,9 @@ export default function EventHorizonScene() {
         ctx.fillStyle = `rgba(232, 89, 74, ${alpha * brightness})`;
         ctx.fill();
 
-        // Connection lines to nearby particles
-        particlesRef.current.forEach((other) => {
-          if (other === p) return;
+        // Connection lines: only check pairs where j > i (halves the O(N²) work)
+        for (let j = i + 1; j < len; j++) {
+          const other = particles[j];
           const ndx = p.x - other.x;
           const ndy = p.y - other.y;
           const ndist = Math.sqrt(ndx * ndx + ndy * ndy);
@@ -143,10 +154,8 @@ export default function EventHorizonScene() {
             ctx.lineTo(other.x, other.y);
             ctx.stroke();
           }
-        });
-      });
-
-      animRef.current = requestAnimationFrame(animate);
+        }
+      }
     };
     animRef.current = requestAnimationFrame(animate);
 
