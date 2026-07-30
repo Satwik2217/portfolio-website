@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://satwiks-portfolio.vercel.app/sitemap.xml
