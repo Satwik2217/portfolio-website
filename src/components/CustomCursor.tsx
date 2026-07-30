@@ -330,7 +330,7 @@ export default function CustomCursor() {
             color: label ? "var(--color-accent)" : "var(--color-fg)",
           }}
         >
-          <CoffeeMug size={label ? 38 : 28} />
+          <CoffeeMug size={label ? 52 : 40} />
           {steams.map((s) => (
             <SteamParticle key={s.id} id={s.id} onComplete={removeSteam} />
           ))}
