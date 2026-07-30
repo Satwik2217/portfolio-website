@@ -8,8 +8,8 @@ export default function CustomCursor() {
   const [label, setLabel] = useState("");
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
-  const springX = useSpring(cursorX, { stiffness: 500, damping: 28 });
-  const springY = useSpring(cursorY, { stiffness: 500, damping: 28 });
+  const springX = useSpring(cursorX, { stiffness: 400, damping: 25 });
+  const springY = useSpring(cursorY, { stiffness: 400, damping: 25 });
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: fine)");
@@ -60,11 +60,11 @@ export default function CustomCursor() {
 
   if (!isPointerFine) return null;
 
-  const size = label ? 80 : 12;
+  const size = label ? 72 : 10;
 
   return (
     <motion.div
-      className="fixed top-0 left-0 z-[200] pointer-events-none mix-blend-difference hidden lg:block"
+      className="fixed top-0 left-0 z-[200] pointer-events-none hidden lg:block"
       style={{
         x: springX,
         y: springY,
@@ -74,9 +74,15 @@ export default function CustomCursor() {
       animate={{ width: size, height: size }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      <div className="w-full h-full rounded-full bg-foreground flex items-center justify-center">
+      <div
+        className={`w-full h-full rounded-full flex items-center justify-center transition-all duration-200 ${
+          label
+            ? "bg-fg text-bg"
+            : "bg-fg/60"
+        }`}
+      >
         {label && (
-          <span className="text-[8px] font-medium text-background tracking-wider leading-none uppercase whitespace-nowrap px-2">
+          <span className="text-[9px] font-semibold tracking-wider uppercase whitespace-nowrap px-2">
             {label}
           </span>
         )}

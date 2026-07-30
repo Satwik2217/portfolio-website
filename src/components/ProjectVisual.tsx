@@ -3,7 +3,6 @@ import { useRef, useEffect } from "react";
 
 function ContractGuardVisual() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -17,67 +16,99 @@ function ContractGuardVisual() {
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
 
-    const labels = ["DOC", "EMBED", "VECTOR", "SEARCH", "LLM", "INSIGHT"];
-    const spacing = rect.width / (labels.length + 1);
-    const nodes = labels.map((_, i) => ({
-      x: spacing * (i + 1),
-      y: rect.height / 2 + (Math.random() - 0.5) * 80,
+    const documents = Array.from({ length: 5 }, (_, i) => ({
+      x: 30 + i * ((rect.width - 60) / 4),
+      y: rect.height / 2 + (Math.random() - 0.5) * 40,
+      w: 40 + Math.random() * 15,
+      h: 50 + Math.random() * 10,
       vx: 0,
       vy: 0,
+      phase: Math.random() * Math.PI * 2,
     }));
+
+    const particles: { x: number; y: number; vx: number; vy: number; life: number }[] = [];
 
     let animId: number;
     const animate = () => {
       ctx.clearRect(0, 0, rect.width, rect.height);
-      nodes.forEach((node, i) => {
-        node.vy += (rect.height / 2 - node.y) * 0.001;
-        node.vy *= 0.98;
-        node.y += node.vy;
+      ctx.fillStyle = "#161616";
+      ctx.fillRect(0, 0, rect.width, rect.height);
 
-        if (i < nodes.length - 1) {
-          const next = nodes[i + 1];
-          ctx.beginPath();
-          ctx.moveTo(node.x, node.y);
-          ctx.lineTo(next.x, next.y);
-          ctx.strokeStyle = "rgba(132, 255, 53, 0.2)";
+      documents.forEach((doc, i) => {
+        doc.vy += (rect.height / 2 - doc.y) * 0.0005;
+        doc.vy *= 0.97;
+        doc.y += doc.vy;
+        doc.x += Math.sin(Date.now() / 2000 + doc.phase) * 0.15;
+
+        // Draw document
+        const x = doc.x;
+        const y = doc.y;
+        ctx.fillStyle = "#1E1C1A";
+        ctx.strokeStyle = "#3A3834";
+        ctx.lineWidth = 1;
+        roundRect(ctx, x, y, doc.w, doc.h, 3);
+        ctx.fill();
+        ctx.stroke();
+
+        // Document lines
+        ctx.fillStyle = "#3A3834";
+        ctx.fillRect(x + 6, y + 10, doc.w - 12, 2);
+        ctx.fillRect(x + 6, y + 18, doc.w - 20, 2);
+        ctx.fillRect(x + 6, y + 26, doc.w - 14, 2);
+
+        // Accent label
+        ctx.fillStyle = "#E8594A";
+        ctx.font = "6px ui-monospace, monospace";
+        ctx.fillText(["DOC", "EMBED", "VECTOR", "SEARCH", "LLM"][i], x + 4, y - 5);
+
+        // Flow particles between docs
+        if (i < documents.length - 1) {
+          const next = documents[i + 1];
+          ctx.strokeStyle = "rgba(232, 89, 74, 0.2)";
           ctx.lineWidth = 1;
+          ctx.setLineDash([3, 4]);
+          ctx.beginPath();
+          ctx.moveTo(x + doc.w, y + doc.h / 2);
+          ctx.lineTo(next.x, next.y + next.h / 2);
           ctx.stroke();
+          ctx.setLineDash([]);
         }
-
-        ctx.beginPath();
-        const gradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, 12);
-        gradient.addColorStop(0, "rgba(132, 255, 53, 0.4)");
-        gradient.addColorStop(1, "rgba(132, 255, 53, 0)");
-        ctx.fillStyle = gradient;
-        ctx.arc(node.x, node.y, 12, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = "#84ff35";
-        ctx.fill();
-
-        ctx.fillStyle = "rgba(240, 240, 240, 0.5)";
-        ctx.font = "9px ui-monospace, monospace";
-        ctx.textAlign = "center";
-        ctx.fillText(labels[i], node.x, node.y - 20);
       });
+
+      // Spawn particles
+      if (Math.random() < 0.1) {
+        particles.push({
+          x: 30 + Math.random() * (rect.width - 60),
+          y: 10,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: 0.2 + Math.random() * 0.3,
+          life: 1,
+        });
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 0.005;
+        if (p.life <= 0) { particles.splice(i, 1); continue; }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(232, 89, 74, ${p.life * 0.4})`;
+        ctx.fill();
+      }
+
       animId = requestAnimationFrame(animate);
     };
     animate();
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  return (
-    <div ref={ref} className="w-full h-full min-h-[280px]">
-      <canvas ref={canvasRef} className="w-full h-full" />
-    </div>
-  );
+  return <canvas ref={canvasRef} className="w-full h-full" />;
 }
 
 function CarbonOptimizerVisual() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -91,55 +122,120 @@ function CarbonOptimizerVisual() {
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
 
-    const points = Array.from({ length: 6 }, (_, i) => ({
-      x: (rect.width / 7) * (i + 1),
-      y: rect.height / 2,
-      phase: (i / 6) * Math.PI * 2,
+    const agents = Array.from({ length: 8 }, () => ({
+      x: Math.random() * rect.width,
+      y: Math.random() * rect.height,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: (Math.random() - 0.5) * 1.5,
+      size: 3 + Math.random() * 4,
+      phase: Math.random() * Math.PI * 2,
+      color: Math.random() < 0.4 ? "#E8594A" : "#3A9D6E",
     }));
 
+    const particles: { x: number; y: number; life: number }[] = [];
     let time = 0;
     let animId: number;
-    const animate = () => {
-      time += 0.02;
-      ctx.clearRect(0, 0, rect.width, rect.height);
-      points.forEach((p, i) => {
-        p.y = rect.height / 2 + Math.sin(time + p.phase) * 30;
 
-        if (i < points.length - 1) {
-          const next = points[i + 1];
-          const gradient = ctx.createLinearGradient(p.x, p.y, next.x, next.y);
-          gradient.addColorStop(0, "rgba(132, 255, 53, 0.15)");
-          gradient.addColorStop(0.5, "rgba(132, 255, 53, 0.4)");
-          gradient.addColorStop(1, "rgba(132, 255, 53, 0.15)");
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(next.x, next.y);
-          ctx.strokeStyle = gradient;
-          ctx.lineWidth = 2;
-          ctx.stroke();
+    const animate = () => {
+      time += 0.01;
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      ctx.fillStyle = "#161616";
+      ctx.fillRect(0, 0, rect.width, rect.height);
+
+      // Background grid
+      ctx.strokeStyle = "rgba(30, 28, 26, 0.6)";
+      ctx.lineWidth = 0.5;
+      for (let x = 0; x < rect.width; x += 30) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, rect.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < rect.height; y += 30) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(rect.width, y);
+        ctx.stroke();
+      }
+
+      agents.forEach((agent, i) => {
+        agent.x += agent.vx;
+        agent.y += agent.vy;
+
+        // Bounce off walls
+        if (agent.x < 5 || agent.x > rect.width - 5) agent.vx *= -1;
+        if (agent.y < 5 || agent.y > rect.height - 5) agent.vy *= -1;
+
+        // Slow drift toward center (optimization)
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        agent.vx += (cx - agent.x) * 0.0003;
+        agent.vy += (cy - agent.y) * 0.0003;
+
+        // Speed limit
+        const speed = Math.sqrt(agent.vx * agent.vx + agent.vy * agent.vy);
+        if (speed > 1.5) {
+          agent.vx = (agent.vx / speed) * 1.5;
+          agent.vy = (agent.vy / speed) * 1.5;
         }
 
+        // Draw agent
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = "#84ff35";
+        ctx.arc(agent.x, agent.y, agent.size, 0, Math.PI * 2);
+        ctx.fillStyle = agent.color;
         ctx.fill();
+
+        // Glow
+        const gradient = ctx.createRadialGradient(agent.x, agent.y, 0, agent.x, agent.y, agent.size * 3);
+        gradient.addColorStop(0, agent.color.replace(")", ", 0.15)").replace("rgb", "rgba"));
+        gradient.addColorStop(1, "transparent");
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(agent.x, agent.y, agent.size * 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Connect nearby agents
+        agents.forEach((other, j) => {
+          if (j <= i) return;
+          const dx = agent.x - other.x;
+          const dy = agent.y - other.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 100) {
+            ctx.strokeStyle = `rgba(58, 157, 110, ${(1 - dist / 100) * 0.2})`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(agent.x, agent.y);
+            ctx.lineTo(other.x, other.y);
+            ctx.stroke();
+          }
+        });
+
+        if (Math.random() < 0.02) {
+          particles.push({ x: agent.x, y: agent.y, life: 1 });
+        }
       });
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.life -= 0.01;
+        if (p.life <= 0) { particles.splice(i, 1); continue; }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(58, 157, 110, ${p.life * 0.3})`;
+        ctx.fill();
+      }
+
       animId = requestAnimationFrame(animate);
     };
     animate();
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  return (
-    <div ref={ref} className="w-full h-full min-h-[280px]">
-      <canvas ref={canvasRef} className="w-full h-full" />
-    </div>
-  );
+  return <canvas ref={canvasRef} className="w-full h-full" />;
 }
 
-function EventHorizonVisual() {
+function EventHorizonPreview() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -153,65 +249,87 @@ function EventHorizonVisual() {
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
 
-    const particles = Array.from({ length: 80 }, () => {
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+
+    const particles = Array.from({ length: 120 }, (_, i) => {
       const angle = Math.random() * Math.PI * 2;
-      const radius = Math.random() * rect.width * 0.4;
+      const radius = 20 + Math.random() * Math.min(rect.width, rect.height) * 0.4;
       return {
-        x: rect.width / 2 + Math.cos(angle) * radius,
-        y: rect.height / 2 + Math.sin(angle) * radius,
-        vx: 0,
-        vy: 0,
-        size: Math.random() * 2 + 0.5,
+        x: cx + Math.cos(angle) * radius,
+        y: cy + Math.sin(angle) * radius,
+        angle,
+        radius,
+        speed: 0.002 + Math.random() * 0.005,
+        size: 0.5 + Math.random() * 2,
         phase: Math.random() * Math.PI * 2,
       };
     });
 
+    let mouseX = cx;
+    let mouseY = cy;
+    const onMove = (e: MouseEvent) => {
+      const r = canvas.getBoundingClientRect();
+      mouseX = (e.clientX - r.left) / r.width * rect.width;
+      mouseY = (e.clientY - r.top) / r.height * rect.height;
+    };
+    canvas.addEventListener("mousemove", onMove);
+
     let animId: number;
     const animate = () => {
-      ctx.clearRect(0, 0, rect.width, rect.height);
+      ctx.fillStyle = "#161616";
+      ctx.fillRect(0, 0, rect.width, rect.height);
 
-      const cx = rect.width / 2;
-      const cy = rect.height / 2;
-
+      // Center glow
+      const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60);
+      glow.addColorStop(0, "rgba(232, 89, 74, 0.06)");
+      glow.addColorStop(1, "transparent");
+      ctx.fillStyle = glow;
       ctx.beginPath();
-      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60);
-      grad.addColorStop(0, "rgba(132, 255, 53, 0.05)");
-      grad.addColorStop(1, "rgba(132, 255, 53, 0)");
-      ctx.fillStyle = grad;
       ctx.arc(cx, cy, 60, 0, Math.PI * 2);
       ctx.fill();
 
       particles.forEach((p) => {
-        const dx = cx - p.x;
-        const dy = cy - p.y;
+        p.angle += p.speed;
+        const dx = mouseX - cx;
+        const dy = mouseY - cy;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const force = 100 / (dist + 50);
-        const angle = Math.atan2(dy, dx);
+        const pull = Math.min(1, 100 / (dist + 20));
 
-        p.vx += Math.cos(angle) * force * 0.02;
-        p.vy += Math.sin(angle) * force * 0.02;
-        p.vx *= 0.99;
-        p.vy *= 0.99;
-        p.x += p.vx;
-        p.y += p.vy;
+        const targetRadius = 20 + Math.random() * 60 * pull + 40;
+        const baseRadius = 20 + p.radius * 0.98 + targetRadius * 0.02;
 
-        const alpha = Math.min(1, 200 / (dist + 50));
+        p.x = cx + Math.cos(p.angle) * p.radius + dx * pull * 0.1;
+        p.y = cy + Math.sin(p.angle) * p.radius + dy * pull * 0.1;
+
+        const alpha = 0.3 + Math.sin(Date.now() / 1000 + p.phase) * 0.2;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(132, 255, 53, ${alpha * 0.6})`;
+        ctx.fillStyle = `rgba(232, 89, 74, ${alpha * 0.6})`;
         ctx.fill();
       });
+
       animId = requestAnimationFrame(animate);
     };
     animate();
-    return () => cancelAnimationFrame(animId);
+    return () => { cancelAnimationFrame(animId); canvas.removeEventListener("mousemove", onMove); };
   }, []);
 
-  return (
-    <div ref={ref} className="w-full h-full min-h-[280px]">
-      <canvas ref={canvasRef} className="w-full h-full" />
-    </div>
-  );
+  return <canvas ref={canvasRef} className="w-full h-full" />;
+}
+
+function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
 }
 
 export default function ProjectVisual({
@@ -222,11 +340,11 @@ export default function ProjectVisual({
   const visualMap = {
     "contract-guard": <ContractGuardVisual />,
     "carbon-optimizer": <CarbonOptimizerVisual />,
-    "event-horizon": <EventHorizonVisual />,
+    "event-horizon": <EventHorizonPreview />,
   };
 
   return (
-    <div className="w-full h-full bg-surface border border-border rounded-sm overflow-hidden">
+    <div className="w-full h-full min-h-[260px] bg-surface border border-border rounded-xl overflow-hidden">
       {visualMap[type]}
     </div>
   );

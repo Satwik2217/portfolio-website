@@ -1,24 +1,33 @@
 export const personalInfo = {
-  name: "SATWIK MISHRA",
+  name: "Satwik Mishra",
   shortName: "SM",
-  tagline: "FULL-STACK DEVELOPER × AI BUILDER",
+  tagline: "Full-Stack Developer × AI Engineer × Creative Technologist",
   description:
     "Final-year Computer Science student building full-stack products, AI-powered applications and experimental interfaces.",
-  location: "PRAYAGRAJ, INDIA",
+  location: "Prayagraj, India",
   year: "2026",
-  focus: "BUILDING: FULL-STACK / AI / AGENTIC SYSTEMS",
-  availability: "AVAILABLE FOR OPPORTUNITIES",
+  focus: "Building: Full-Stack / AI / Agentic Systems",
+  availability: "Available for opportunities",
   email: "satwikmishra2217@gmail.com",
   phone: "+91 9118876566",
-  introStatement:
-    "I BUILD SOFTWARE THAT LIVES BETWEEN CODE AND INTELLIGENCE.",
+  introStatement: "I build intelligent software and interactive digital experiences.",
   introBody:
-    "From full-stack products to AI systems, I like turning complex ideas into things people can actually use.",
-  aboutTitle: "CURIOUS BY DEFAULT.",
+    "Full-stack developer exploring the intersection of AI, web technologies, and creative coding.",
+  aboutTitle: "About Satwik",
   aboutBody:
-    "I'm Satwik Mishra, a Computer Science student interested in the intersection of software engineering and artificial intelligence. I build full-stack applications, explore AI/ML systems, work with RAG pipelines, experiment with agentic AI, and craft creative frontend experiences. My focus is on building real products that solve real problems.",
-  ctaTitle: "LET'S BUILD SOMETHING USEFUL.",
-  ctaSubtitle: "Looking for:",
+    "I'm a B.Tech Computer Science student building full-stack applications and experimenting with AI/ML, agentic systems, interactive experiences, and automation. I enjoy turning ideas into working products.",
+  interests: [
+    "AI Engineering",
+    "Full-Stack Development",
+    "Generative AI",
+    "RAG Systems",
+    "Agentic AI",
+    "Creative Coding",
+    "Developer Tools",
+    "Automation",
+  ],
+  ctaTitle: "Have an idea?",
+  ctaSubtitle: "Let's build something.",
   ctaRoles: [
     "Software Engineering Internships",
     "AI/ML Internships",
@@ -38,16 +47,17 @@ export const projects = [
   {
     id: 1,
     number: "01",
-    title: "CONTRACT GUARD AI",
-    category: "AI / FULL-STACK",
+    title: "Contract Guard AI",
+    category: "AI / RAG / Full Stack",
+    tagline: "AI-powered contract intelligence",
     description:
       "AI-powered contract analyzer using Retrieval-Augmented Generation.",
-    technologies: ["RAG Pipeline", "Gemini LLM", "pgvector", "React", "FastAPI"],
+    technologies: ["React", "FastAPI", "Gemini LLM", "pgvector", "RAG"],
     year: "2025",
     details: [
-      "Integrated Gemini LLM with pgvector for semantic search",
+      "Gemini LLM integration with pgvector for semantic search",
       "Built an interactive React frontend for contract analysis",
-      "Designed a retrieval-based architecture for contract insights",
+      "Designed a retrieval-based RAG pipeline for contract insights",
     ],
     github: "https://github.com/Satwik2217/contract-guard-ai",
     live: null,
@@ -56,16 +66,17 @@ export const projects = [
   {
     id: 2,
     number: "02",
-    title: "CARBON OPTIMIZER",
-    category: "AI / REINFORCEMENT LEARNING",
+    title: "Carbon Optimizer",
+    category: "AI / Reinforcement Learning",
+    tagline: "RL-powered carbon optimization",
     description:
-      "An RL-powered environment for carbon optimization with real-time backend communication.",
-    technologies: ["FastAPI", "Python", "Reinforcement Learning", "WebSockets"],
+      "Reinforcement-learning environment designed for carbon optimization with real-time backend communication.",
+    technologies: ["Python", "FastAPI", "Reinforcement Learning", "WebSockets"],
     year: "2025",
     details: [
       "RL environment for carbon optimization with reward shaping",
       "FastAPI backend with real-time WebSocket communication",
-      "Optimized convergence through advanced reward shaping",
+      "Optimized convergence through advanced reward shaping techniques",
     ],
     github: "https://github.com/Satwik2217/carbon-optimizer",
     live: null,
@@ -74,16 +85,17 @@ export const projects = [
   {
     id: 3,
     number: "03",
-    title: "EVENT HORIZON",
-    category: "AI / 3D INTERACTION",
+    title: "Event Horizon",
+    category: "Creative Coding / Computer Vision / 3D",
+    tagline: "AI Gesture Visualization",
     description:
       "Gesture-controlled 3D particle simulation running directly in the browser.",
     technologies: ["Three.js", "MediaPipe", "JavaScript"],
     year: "2025",
     details: [
-      "MediaPipe Hands integration for gesture control",
-      "Three.js particle system with real-time interaction",
-      "Smooth browser rendering with optimized performance",
+      "MediaPipe Hands integration for real-time gesture control",
+      "Three.js particle system with mouse and webcam interaction",
+      "Optimized rendering with smooth browser performance",
     ],
     github: "https://github.com/Satwik2217/event-horizon",
     live: null,
@@ -94,7 +106,7 @@ export const projects = [
 export const experience = [
   {
     year: "2025",
-    title: "FREELANCE WEB DEVELOPER",
+    title: "Freelance Web Developer",
     organization: "Fiverr — Remote",
     details: [
       "Built and deployed websites for coaching businesses featuring automated inquiry workflows",
@@ -103,8 +115,8 @@ export const experience = [
   },
   {
     year: "2025",
-    title: "WEB DEVELOPMENT INTERN",
-    organization: "MERN STACK — Udemy Training Programme, Remote",
+    title: "Web Development Intern — MERN Stack",
+    organization: "Udemy Training Programme — Remote",
     details: [
       "Developed a full-stack weather application",
       "Implemented RESTful backend services using Node.js and Express.js",
@@ -112,7 +124,7 @@ export const experience = [
   },
   {
     year: "2024",
-    title: "JAVA INTERN",
+    title: "Java Intern",
     organization: "Summer Training Programme — United Institute of Technology, Prayagraj",
     details: [
       "Strengthened Java fundamentals including OOP, Collections, Exception Handling",
@@ -123,19 +135,19 @@ export const experience = [
 
 export const education = [
   {
-    institution: "UNITED INSTITUTE OF TECHNOLOGY, PRAYAGRAJ",
+    institution: "United Institute of Technology, Prayagraj",
     degree: "B.Tech — Computer Science Engineering",
     period: "2023 — 2027",
     cgpa: "6.78",
   },
   {
-    institution: "CLASS XII",
+    institution: "Class XII",
     degree: "Intermediate",
     period: "2022",
     score: "70%",
   },
   {
-    institution: "CLASS X",
+    institution: "Class X",
     degree: "High School",
     period: "2020",
     score: "92%",
@@ -143,60 +155,60 @@ export const education = [
 ];
 
 export const achievements = [
-  { number: "01", title: "1st Prize", description: "Code Aarambh Coding Competition — 2024" },
-  { number: "02", title: "2nd Position", description: "JAM Competition" },
-  { number: "03", title: "3-Star", description: "Java — HackerRank" },
-  { number: "04", title: "2-Star", description: "Python — HackerRank" },
+  { number: "01", title: "1st Prize — Code Aarambh", description: "Coding Competition — 2024" },
+  { number: "02", title: "2nd Position — JAM", description: "JAM Competition" },
+  { number: "03", title: "3-Star Java", description: "HackerRank" },
+  { number: "04", title: "2-Star Python", description: "HackerRank" },
 ];
 
 export const skills = {
   Languages: ["Java", "Python", "JavaScript", "HTML", "CSS"],
-  Web: ["React", "Node.js", "Express", "FastAPI", "REST APIs"],
-  "AI / ML": ["RAG", "Reinforcement Learning", "Gemini API", "MediaPipe", "pgvector"],
+  "Web & Frameworks": ["React", "Node.js", "Express.js", "FastAPI", "REST APIs"],
+  "AI / ML": ["RAG Pipelines", "Reinforcement Learning", "Gemini API", "MediaPipe", "pgvector"],
   Tools: ["Docker", "Git", "MongoDB", "n8n", "WebSockets", "Three.js", "Vercel"],
   "Core CS": ["DSA", "DBMS", "Operating Systems", "Computer Networks"],
 };
 
 export const exploring = [
-  "AGENTIC AI",
-  "LANGGRAPH",
-  "LANGCHAIN",
-  "AI AGENTS",
-  "RAG SYSTEMS",
-  "GENERATIVE AI",
-  "SYSTEM DESIGN",
-  "MLOPS",
-];
-
-export const techStack = [
-  "PYTHON",
-  "JAVASCRIPT",
-  "TYPESCRIPT",
-  "REACT",
-  "NEXT.JS",
-  "FASTAPI",
-  "NODE.JS",
-  "POSTGRESQL",
-  "MONGODB",
-  "DOCKER",
-  "THREE.JS",
-  "LANGCHAIN",
-  "LANGGRAPH",
-  "GEMINI",
+  "Agentic AI",
+  "LangGraph",
+  "LangChain",
+  "AI Agents",
+  "RAG Systems",
+  "Generative AI",
+  "System Design",
+  "MLOps",
 ];
 
 export const experiments = [
-  "AI AGENTS",
-  "3D WEB",
-  "GENERATIVE UI",
-  "VOICE AI",
+  "AI Agents",
+  "3D Web",
+  "Generative UI",
+  "Voice AI",
   "RAG",
-  "REAL-TIME SYSTEMS",
+  "Real-Time Systems",
+];
+
+export const techStack = [
+  "Python",
+  "JavaScript",
+  "TypeScript",
+  "React",
+  "Next.js",
+  "FastAPI",
+  "Node.js",
+  "PostgreSQL",
+  "MongoDB",
+  "Docker",
+  "Three.js",
+  "LangChain",
+  "LangGraph",
+  "Gemini",
 ];
 
 export const navItems = [
-  { id: "work", label: "01 WORK" },
-  { id: "experience", label: "02 EXPERIENCE" },
-  { id: "about", label: "03 ABOUT" },
-  { id: "contact", label: "04 CONTACT" },
+  { id: "work", label: "Work" },
+  { id: "experience", label: "Experience" },
+  { id: "about", label: "About" },
+  { id: "contact", label: "Contact" },
 ];

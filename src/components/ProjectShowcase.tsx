@@ -1,149 +1,166 @@
 "use client";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { ExternalLink, GitBranch } from "lucide-react";
+import { ArrowUpRight, GitBranch } from "lucide-react";
 import { projects } from "@/data/portfolio";
 import ProjectVisual from "./ProjectVisual";
-import TiltCard from "./TiltCard";
-import MagneticButton from "./MagneticButton";
 
-function ProjectCard({ project }: { project: (typeof projects)[0] }) {
+function ProjectCard({ project, index }: { project: (typeof projects)[0]; index: number }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-12%" });
+  const isInView = useInView(ref, { once: true, margin: "-10%" });
 
   return (
     <motion.div
       ref={ref}
-      className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 py-16 lg:py-24 border-b border-border last:border-b-0"
-      initial={{ opacity: 0, y: 60 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 py-16 lg:py-24 items-center border-b border-border last:border-b-0"
+      initial={{ opacity: 0 }}
+      animate={isInView ? { opacity: 1 } : {}}
+      transition={{ duration: 0.5 }}
     >
-      <div className="order-2 lg:order-1 flex flex-col justify-center">
-        <motion.span
-          className="text-[clamp(3rem,6vw,5rem)] font-bold text-accent/20 leading-none"
-          initial={{ opacity: 0, x: -30 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ delay: 0.15, duration: 0.5 }}
-        >
-          {project.number}
-        </motion.span>
-        <span className="mt-2 text-[10px] tracking-[0.25em] text-accent font-mono">
-          {project.category}
-        </span>
-        <h3 className="mt-4 text-[clamp(1.5rem,3vw,2.5rem)] font-bold tracking-[-0.02em] leading-tight">
-          {project.title}
-        </h3>
-        <p className="mt-4 text-muted text-sm leading-relaxed max-w-md">
-          {project.description}
-        </p>
+      {/* Visual */}
+      <motion.div
+        className={`order-1 ${index % 2 === 1 ? "lg:order-2" : ""}`}
+        initial={{ opacity: 0, y: 30 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ delay: 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="relative group">
+          <ProjectVisual type={project.visual as "contract-guard" | "carbon-optimizer" | "event-horizon"} />
+          {/* Cursor follower glow */}
+          <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-border group-hover:ring-accent/20 transition-all duration-500 pointer-events-none" />
+        </div>
+      </motion.div>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+      {/* Content */}
+      <div className={`order-2 ${index % 2 === 1 ? "lg:order-1" : ""}`}>
+        <motion.span
+          className="text-xs font-semibold text-accent uppercase tracking-widest"
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.15, duration: 0.3 }}
+        >
+          {project.category}
+        </motion.span>
+
+        <motion.h3
+          className="mt-2 text-[clamp(1.5rem,3.5vw,2.8rem)] font-bold tracking-[-0.02em] leading-tight text-fg"
+          initial={{ opacity: 0, y: 15 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          {project.title}
+        </motion.h3>
+
+        <motion.p
+          className="mt-1 text-base text-accent font-medium"
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.25, duration: 0.3 }}
+        >
+          {project.tagline}
+        </motion.p>
+
+        <motion.p
+          className="mt-4 text-sm text-fg-secondary leading-relaxed"
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.3, duration: 0.3 }}
+        >
+          {project.description}
+        </motion.p>
+
+        {/* Tech tags */}
+        <motion.div
+          className="mt-4 flex flex-wrap gap-1.5"
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.35, duration: 0.3 }}
+        >
           {project.technologies.map((tech) => (
             <span
               key={tech}
-              className="text-[10px] tracking-wider px-3 py-1.5 border border-border text-muted font-mono hover:border-accent hover:text-accent transition-all duration-300"
+              className="text-xs px-2.5 py-1 bg-bg-secondary text-fg-secondary rounded-md font-medium"
             >
               {tech}
             </span>
           ))}
-        </div>
+        </motion.div>
 
-        <ul className="mt-6 space-y-2">
+        {/* Details */}
+        <motion.ul
+          className="mt-5 space-y-2"
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.4, duration: 0.3 }}
+        >
           {project.details.map((detail, i) => (
-            <motion.li
-              key={i}
-              className="text-sm text-muted flex items-start gap-2"
-              initial={{ opacity: 0, x: -20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.3 + i * 0.1, duration: 0.4 }}
-            >
-              <span className="text-accent mt-1.5 w-1 h-1 rounded-full bg-accent flex-shrink-0" />
+            <li key={i} className="text-sm text-fg-secondary flex items-start gap-2">
+              <span className="w-1 h-1 rounded-full bg-accent mt-2 flex-shrink-0" />
               {detail}
-            </motion.li>
+            </li>
           ))}
-        </ul>
+        </motion.ul>
 
-        <div className="mt-8 flex items-center gap-4">
-          <MagneticButton>
+        {/* Links */}
+        <motion.div
+          className="mt-6 flex items-center gap-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.45, duration: 0.3 }}
+        >
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-1.5 text-sm font-medium text-fg-secondary hover:text-accent transition-colors"
+          >
+            <GitBranch size={15} />
+            View Code
+            <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </a>
+          {project.live && (
             <a
-              href={project.github}
-              data-cursor="GITHUB"
+              href={project.live}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-xs tracking-wider text-muted hover:text-foreground transition-colors border border-border hover:border-accent px-4 py-2.5"
+              className="group inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-dark transition-colors"
             >
-              <GitBranch size={14} />
-              VIEW CODE
+              Live Demo
+              <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
-          </MagneticButton>
-          {project.live && (
-            <MagneticButton>
-              <a
-                href={project.live}
-                data-cursor="LIVE"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-xs tracking-wider text-muted hover:text-accent transition-colors border border-border hover:border-accent px-4 py-2.5"
-              >
-                <ExternalLink size={14} />
-                LIVE DEMO
-              </a>
-            </MagneticButton>
           )}
-        </div>
+        </motion.div>
       </div>
-
-      <motion.div
-        className="order-1 lg:order-2"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={isInView ? { opacity: 1, scale: 1 } : {}}
-        transition={{ delay: 0.2, duration: 0.6 }}
-      >
-        <TiltCard>
-          <div
-            className="relative w-full aspect-[4/3] lg:aspect-video group cursor-pointer"
-            data-cursor="VIEW PROJECT"
-            tabIndex={0}
-            role="img"
-            aria-label={`Preview of ${project.title}`}
-          >
-            <ProjectVisual type={project.visual as "contract-guard" | "carbon-optimizer" | "event-horizon"} />
-            <div className="absolute inset-0 bg-accent/0 group-hover:bg-accent/5 transition-colors duration-500" />
-          </div>
-        </TiltCard>
-      </motion.div>
     </motion.div>
   );
 }
 
 export default function ProjectShowcase() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-10%" });
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-10%" });
 
   return (
     <section
       data-section="work"
       className="px-6 lg:px-10 py-20 lg:py-32"
     >
-      <div ref={ref} className="max-w-7xl mx-auto">
+      <div ref={sectionRef} className="max-w-7xl mx-auto">
         <motion.div
-          className="mb-16 lg:mb-24"
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
-          <span className="text-xs tracking-[0.25em] text-muted font-mono">
-            SELECTED WORK
-          </span>
-          <h2 className="mt-3 text-[clamp(2rem,4vw,4rem)] font-bold tracking-[-0.03em]">
-            THINGS I&apos;VE BUILT
+          <span className="text-xs font-semibold text-accent uppercase tracking-widest">Featured Work</span>
+          <h2 className="mt-3 text-[clamp(1.8rem,3vw,2.5rem)] font-bold tracking-[-0.02em]">
+            Things I've Built
           </h2>
         </motion.div>
 
-        {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
+        <div className="mt-8 lg:mt-12">
+          {projects.map((project, i) => (
+            <ProjectCard key={project.id} project={project} index={i} />
+          ))}
+        </div>
       </div>
     </section>
   );

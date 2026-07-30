@@ -1,103 +1,91 @@
 "use client";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, GitBranch, Globe, Mail } from "lucide-react";
 import { personalInfo, socialLinks } from "@/data/portfolio";
+import SatwikCharacter from "@/components/character/SatwikCharacter";
 
 export default function Contact() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-10%" });
-
-  const links = [
-    { label: "GitHub", url: socialLinks.github },
-    { label: "LinkedIn", url: socialLinks.linkedin },
-    { label: "LeetCode", url: socialLinks.leetcode },
-    { label: "GeeksforGeeks", url: socialLinks.geeksforgeeks },
-    { label: "HackerRank", url: socialLinks.hackerrank },
-  ];
+  const isInView = useInView(ref, { once: true, margin: "-15%" });
 
   return (
-    <section className="px-6 lg:px-10 py-20 lg:py-32 border-t border-border">
-      <div ref={ref} className="max-w-4xl mx-auto">
-        <motion.span
-          className="text-xs tracking-[0.25em] text-accent font-mono block"
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5 }}
-        >
-          GET IN TOUCH
-        </motion.span>
-
-        <motion.h2
-          className="mt-6 text-[clamp(2rem,5vw,5rem)] font-bold tracking-[-0.03em] leading-tight"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.1, duration: 0.5 }}
-        >
-          {personalInfo.name}
-        </motion.h2>
-
+    <section
+      data-section="contact"
+      className="px-6 lg:px-10 py-20 lg:py-32"
+    >
+      <div ref={ref} className="max-w-6xl mx-auto">
         <motion.div
-          className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8"
-          initial={{ opacity: 0, y: 20 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center"
+          initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.2, duration: 0.5 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="space-y-6">
-            <div>
-              <span className="text-[10px] tracking-[0.25em] text-muted font-mono">
-                EMAIL
-              </span>
+          {/* Left */}
+          <div>
+            <span className="text-xs font-semibold text-accent uppercase tracking-widest">Contact</span>
+            <h2 className="mt-3 text-[clamp(2rem,5vw,4rem)] font-bold tracking-[-0.03em] leading-tight text-fg">
+              Have an idea?
+            </h2>
+            <p className="mt-3 text-lg text-fg-secondary">
+              Let's build something. I'm always open to interesting projects, collaborations, and opportunities.
+            </p>
+
+            <div className="mt-8 space-y-4">
               <a
                 href={`mailto:${personalInfo.email}`}
-                className="block mt-2 text-sm text-foreground hover:text-accent transition-colors"
+                className="group flex items-center gap-3 text-fg-secondary hover:text-accent transition-colors"
               >
-                {personalInfo.email}
+                <div className="w-10 h-10 rounded-lg bg-accent-light flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors">
+                  <Mail size={16} className="text-accent" />
+                </div>
+                <div>
+                  <span className="text-xs text-fg-secondary/60 uppercase tracking-wider font-medium">Email</span>
+                  <p className="text-sm font-medium">{personalInfo.email}</p>
+                </div>
               </a>
-            </div>
-            <div>
-              <span className="text-[10px] tracking-[0.25em] text-muted font-mono">
-                PHONE
-              </span>
+
               <a
-                href={`tel:${personalInfo.phone}`}
-                className="block mt-2 text-sm text-foreground hover:text-accent transition-colors"
+                href={socialLinks.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 text-fg-secondary hover:text-accent transition-colors"
               >
-                {personalInfo.phone}
+                <div className="w-10 h-10 rounded-lg bg-blue-light flex items-center justify-center flex-shrink-0 group-hover:bg-blue/20 transition-colors">
+                  <GitBranch size={16} className="text-blue" />
+                </div>
+                <div>
+                  <span className="text-xs text-fg-secondary/60 uppercase tracking-wider font-medium">GitHub</span>
+                  <p className="text-sm font-medium">Satwik2217</p>
+                </div>
               </a>
-            </div>
-            <div>
-              <span className="text-[10px] tracking-[0.25em] text-muted font-mono">
-                LOCATION
-              </span>
-              <p className="mt-2 text-sm text-muted">
-                {personalInfo.location}
-              </p>
+
+              <a
+                href={socialLinks.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3 text-fg-secondary hover:text-accent transition-colors"
+              >
+                <div className="w-10 h-10 rounded-lg bg-blue-light flex items-center justify-center flex-shrink-0 group-hover:bg-blue/20 transition-colors">
+                  <Globe size={16} className="text-blue" />
+                </div>
+                <div>
+                  <span className="text-xs text-fg-secondary/60 uppercase tracking-wider font-medium">LinkedIn</span>
+                  <p className="text-sm font-medium">Satwik Mishra</p>
+                </div>
+              </a>
             </div>
           </div>
 
-          <div>
-            <span className="text-[10px] tracking-[0.25em] text-muted font-mono block mb-4">
-              SOCIAL
-            </span>
-            <div className="space-y-3">
-              {links.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors group"
-                >
-                  <ArrowUpRight
-                    size={12}
-                    className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-                  />
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
+          {/* Right: Character */}
+          <motion.div
+            className="flex justify-center lg:justify-end"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <SatwikCharacter state="celebrating" size={280} interactive={true} />
+          </motion.div>
         </motion.div>
       </div>
     </section>

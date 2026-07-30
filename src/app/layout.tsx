@@ -17,21 +17,21 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Satwik Mishra — Full-Stack Developer & AI Builder",
+  title: "Satwik Mishra — Full-Stack Developer & AI Engineer",
   description:
-    "Portfolio of Satwik Mishra, a Computer Science student building full-stack applications, AI-powered systems and interactive web experiences.",
+    "Satwik Mishra is a computer science student and developer building full-stack applications, AI systems, and interactive web experiences.",
   openGraph: {
-    title: "Satwik Mishra — Full-Stack Developer & AI Builder",
+    title: "Satwik Mishra — Full-Stack Developer & AI Engineer",
     description:
-      "Portfolio of Satwik Mishra, a Computer Science student building full-stack applications, AI-powered systems and interactive web experiences.",
+      "Satwik Mishra is a computer science student and developer building full-stack applications, AI systems, and interactive web experiences.",
     type: "website",
     locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Satwik Mishra — Full-Stack Developer & AI Builder",
+    title: "Satwik Mishra — Full-Stack Developer & AI Engineer",
     description:
-      "Portfolio of Satwik Mishra, a Computer Science student building full-stack applications, AI-powered systems and interactive web experiences.",
+      "Satwik Mishra is a computer science student and developer building full-stack applications, AI systems, and interactive web experiences.",
   },
   robots: {
     index: true,
@@ -47,7 +47,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className="overflow-x-hidden">{children}</body>
+      <body className="overflow-x-hidden antialiased">{children}</body>
     </html>
   );
 }
