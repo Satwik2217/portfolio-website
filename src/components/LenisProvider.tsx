@@ -4,8 +4,6 @@ import Lenis from "lenis";
 
 export default function LenisProvider({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
-  const rafRef = useRef<number>(0);
-  const idleRef = useRef(0);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -19,27 +17,41 @@ export default function LenisProvider({ children }: { children: ReactNode }) {
 
     lenisRef.current = lenis;
 
-    const onIdle = () => {
-      idleRef.current = Date.now();
+    let rafId = 0;
+    let running = false;
+    let lastActivity = 0;
+
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(rafId);
     };
 
-    window.addEventListener("scroll", onIdle, { passive: true });
-    window.addEventListener("wheel", onIdle, { passive: true });
-    window.addEventListener("touchmove", onIdle, { passive: true });
+    const onActivity = () => {
+      lastActivity = Date.now();
+      if (!running) {
+        running = true;
+        const tick = (time: number) => {
+          if (!running) return;
+          if (Date.now() - lastActivity > 3000) {
+            stop();
+            return;
+          }
+          lenis.raf(time);
+          rafId = requestAnimationFrame(tick);
+        };
+        rafId = requestAnimationFrame(tick);
+      }
+    };
 
-    function raf(time: number) {
-      rafRef.current = requestAnimationFrame(raf);
-      if (Date.now() - idleRef.current > 3000) return;
-      lenis.raf(time);
-    }
-
-    rafRef.current = requestAnimationFrame(raf);
+    window.addEventListener("scroll", onActivity, { passive: true });
+    window.addEventListener("wheel", onActivity, { passive: true });
+    window.addEventListener("touchmove", onActivity, { passive: true });
 
     return () => {
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("scroll", onIdle);
-      window.removeEventListener("wheel", onIdle);
-      window.removeEventListener("touchmove", onIdle);
+      stop();
+      window.removeEventListener("scroll", onActivity);
+      window.removeEventListener("wheel", onActivity);
+      window.removeEventListener("touchmove", onActivity);
       lenis.destroy();
     };
   }, []);

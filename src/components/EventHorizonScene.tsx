@@ -4,18 +4,21 @@ import { useRef, useEffect, useCallback, useState } from "react";
 export default function EventHorizonScene() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [webcamReady, setWebcamReady] = useState(false);
   const [mouseInside, setMouseInside] = useState(false);
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const particlesRef = useRef<Particle[]>([]);
   const animRef = useRef<number>(0);
   const isVisibleRef = useRef(true);
+  const onVisibleRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+        if (entry.isIntersecting) onVisibleRef.current?.();
+      },
       { threshold: 0 }
     );
     obs.observe(el);
@@ -34,7 +37,7 @@ export default function EventHorizonScene() {
       const rect = canvas.getBoundingClientRect();
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
     window.addEventListener("resize", resize);
@@ -69,7 +72,10 @@ export default function EventHorizonScene() {
 
     const animate = (time: number) => {
       animRef.current = requestAnimationFrame(animate);
-      if (!isVisibleRef.current) return;
+      if (!isVisibleRef.current) {
+        cancelAnimationFrame(animRef.current);
+        return;
+      }
       if (!canvas || !ctx) return;
       const rect = canvas.getBoundingClientRect();
       const w = rect.width;
@@ -157,10 +163,16 @@ export default function EventHorizonScene() {
         }
       }
     };
-    animRef.current = requestAnimationFrame(animate);
+    const start = () => {
+      cancelAnimationFrame(animRef.current);
+      animRef.current = requestAnimationFrame(animate);
+    };
+    onVisibleRef.current = start;
+    start();
 
     return () => {
       cancelAnimationFrame(animRef.current);
+      onVisibleRef.current = null;
       window.removeEventListener("resize", resize);
     };
   }, []);

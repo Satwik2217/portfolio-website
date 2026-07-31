@@ -4,26 +4,29 @@ import { useRef, useEffect } from "react";
 function useCanvasVisibility() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isVisibleRef = useRef(true);
+  const onVisibleRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+        if (entry.isIntersecting) onVisibleRef.current?.();
+      },
       { threshold: 0 }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
-  return { containerRef, isVisibleRef };
+  return { containerRef, isVisibleRef, onVisibleRef };
 }
 
 function ContractGuardVisual() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { containerRef, isVisibleRef } = useCanvasVisibility();
+  const { containerRef, isVisibleRef, onVisibleRef } = useCanvasVisibility();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -51,7 +54,10 @@ function ContractGuardVisual() {
     let animId: number;
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      if (!isVisibleRef.current) return;
+      if (!isVisibleRef.current) {
+        cancelAnimationFrame(animId);
+        return;
+      }
       ctx.clearRect(0, 0, rect.width, rect.height);
       ctx.fillStyle = "#161616";
       ctx.fillRect(0, 0, rect.width, rect.height);
@@ -120,9 +126,16 @@ function ContractGuardVisual() {
         ctx.fill();
       }
     };
+    onVisibleRef.current = () => {
+      cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(animate);
+    };
     animate();
-    return () => cancelAnimationFrame(animId);
-  }, []);
+    return () => {
+      cancelAnimationFrame(animId);
+      onVisibleRef.current = null;
+    };
+  }, [isVisibleRef, onVisibleRef]);
 
   return (
     <div ref={containerRef} className="w-full h-full">
@@ -133,9 +146,8 @@ function ContractGuardVisual() {
 
 function CarbonOptimizerVisual() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { containerRef, isVisibleRef } = useCanvasVisibility();
+  const { containerRef, isVisibleRef, onVisibleRef } = useCanvasVisibility();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -159,13 +171,14 @@ function CarbonOptimizerVisual() {
     }));
 
     const particles: { x: number; y: number; life: number }[] = [];
-    let time = 0;
     let animId: number;
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      if (!isVisibleRef.current) return;
-      time += 0.01;
+      if (!isVisibleRef.current) {
+        cancelAnimationFrame(animId);
+        return;
+      }
       ctx.clearRect(0, 0, rect.width, rect.height);
       ctx.fillStyle = "#161616";
       ctx.fillRect(0, 0, rect.width, rect.height);
@@ -250,9 +263,16 @@ function CarbonOptimizerVisual() {
         ctx.fill();
       }
     };
+    onVisibleRef.current = () => {
+      cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(animate);
+    };
     animate();
-    return () => cancelAnimationFrame(animId);
-  }, []);
+    return () => {
+      cancelAnimationFrame(animId);
+      onVisibleRef.current = null;
+    };
+  }, [isVisibleRef, onVisibleRef]);
 
   return (
     <div ref={containerRef} className="w-full h-full">
@@ -263,9 +283,8 @@ function CarbonOptimizerVisual() {
 
 function EventHorizonPreview() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { containerRef, isVisibleRef } = useCanvasVisibility();
+  const { containerRef, isVisibleRef, onVisibleRef } = useCanvasVisibility();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -281,7 +300,7 @@ function EventHorizonPreview() {
     const cx = rect.width / 2;
     const cy = rect.height / 2;
 
-    const particles = Array.from({ length: 100 }, (_, i) => {
+    const particles = Array.from({ length: 100 }, () => {
       const angle = Math.random() * Math.PI * 2;
       const radius = 20 + Math.random() * Math.min(rect.width, rect.height) * 0.4;
       return {
@@ -307,7 +326,10 @@ function EventHorizonPreview() {
     let animId: number;
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      if (!isVisibleRef.current) return;
+      if (!isVisibleRef.current) {
+        cancelAnimationFrame(animId);
+        return;
+      }
       ctx.fillStyle = "#161616";
       ctx.fillRect(0, 0, rect.width, rect.height);
 
@@ -327,9 +349,6 @@ function EventHorizonPreview() {
         const dist = Math.sqrt(dx * dx + dy * dy);
         const pull = Math.min(1, 100 / (dist + 20));
 
-        const targetRadius = 20 + Math.random() * 60 * pull + 40;
-        const baseRadius = 20 + p.radius * 0.98 + targetRadius * 0.02;
-
         p.x = cx + Math.cos(p.angle) * p.radius + dx * pull * 0.1;
         p.y = cy + Math.sin(p.angle) * p.radius + dy * pull * 0.1;
 
@@ -340,9 +359,17 @@ function EventHorizonPreview() {
         ctx.fill();
       });
     };
+    onVisibleRef.current = () => {
+      cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(animate);
+    };
     animate();
-    return () => { cancelAnimationFrame(animId); canvas.removeEventListener("mousemove", onMove); };
-  }, []);
+    return () => {
+      cancelAnimationFrame(animId);
+      onVisibleRef.current = null;
+      canvas.removeEventListener("mousemove", onMove);
+    };
+  }, [isVisibleRef, onVisibleRef]);
 
   return (
     <div ref={containerRef} className="w-full h-full">

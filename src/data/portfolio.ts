@@ -43,6 +43,174 @@ export const socialLinks = {
   hackerrank: "https://www.hackerrank.com/profile/satwikmishra2217",
 };
 
+export const resumePath = "/Satwik_Mishra_Off_Campus.pdf";
+
+export const heroRoles = [
+  "Computer Science Student",
+  "Full Stack Developer",
+  "AI Enthusiast",
+];
+
+export const careerGoals = [
+  "AI / ML Engineering",
+  "Full-Stack Development",
+  "Agentic Systems",
+  "Building Products That Matter",
+];
+
+export const specialAbilities = [
+  {
+    name: "Problem Solving",
+    description: "DSA-driven thinking, competitive coding on LeetCode & HackerRank.",
+    icon: "code",
+  },
+  {
+    name: "System Design",
+    description: "Designing scalable architectures for full-stack and AI products.",
+    icon: "network",
+  },
+  {
+    name: "AI",
+    description: "RAG pipelines, Reinforcement Learning, Gemini API, agentic AI.",
+    icon: "brain",
+  },
+  {
+    name: "Web Development",
+    description: "React, Next.js, Node.js, Express, FastAPI and beyond.",
+    icon: "globe",
+  },
+  {
+    name: "Cloud Computing",
+    description: "Deploying and shipping on Vercel, Dockerized backends, AWS-ready.",
+    icon: "cloud",
+  },
+];
+
+export type SkillNode = {
+  name: string;
+  category: string;
+  years: string;
+  projects: string[];
+  level: number;
+};
+
+export const skillGraph: SkillNode[] = [
+  { name: "Java", category: "Languages", years: "3+ yrs", projects: ["Java Internship", "Core CS"], level: 3 },
+  { name: "Python", category: "Languages", years: "3+ yrs", projects: ["Carbon Optimizer", "RAG pipelines"], level: 3 },
+  { name: "JavaScript", category: "Languages", years: "2+ yrs", projects: ["Contract Guard AI", "Event Horizon"], level: 2 },
+  { name: "React", category: "Web & Frameworks", years: "2+ yrs", projects: ["Contract Guard AI"], level: 2 },
+  { name: "Node.js", category: "Web & Frameworks", years: "1+ yr", projects: ["Weather app", "REST APIs"], level: 2 },
+  { name: "Express.js", category: "Web & Frameworks", years: "1+ yr", projects: ["Weather app"], level: 2 },
+  { name: "FastAPI", category: "Web & Frameworks", years: "1+ yr", projects: ["Contract Guard AI", "Carbon Optimizer"], level: 2 },
+  { name: "RAG Pipelines", category: "AI / ML", years: "1+ yr", projects: ["Contract Guard AI"], level: 2 },
+  { name: "Reinforcement Learning", category: "AI / ML", years: "1+ yr", projects: ["Carbon Optimizer"], level: 2 },
+  { name: "Gemini API", category: "AI / ML", years: "1+ yr", projects: ["Contract Guard AI"], level: 2 },
+  { name: "MediaPipe", category: "AI / ML", years: "1+ yr", projects: ["Event Horizon"], level: 2 },
+  { name: "Docker", category: "Tools", years: "1+ yr", projects: ["Deployed backends"], level: 2 },
+  { name: "Git", category: "Tools", years: "3+ yrs", projects: ["All projects"], level: 3 },
+  { name: "MongoDB", category: "Tools", years: "1+ yr", projects: ["Full-stack apps"], level: 2 },
+  { name: "n8n", category: "Tools", years: "1+ yr", projects: ["Automation workflows"], level: 2 },
+  { name: "Three.js", category: "Tools", years: "1+ yr", projects: ["Event Horizon"], level: 2 },
+  { name: "DSA", category: "Core CS", years: "2+ yrs", projects: ["LeetCode", "Code Aarambh"], level: 3 },
+  { name: "DBMS", category: "Core CS", years: "2+ yrs", projects: ["Course work"], level: 2 },
+  { name: "Operating Systems", category: "Core CS", years: "2+ yrs", projects: ["Course work"], level: 2 },
+  { name: "Computer Networks", category: "Core CS", years: "2+ yrs", projects: ["Course work"], level: 2 },
+];
+
+export const codingProfiles = [
+  {
+    name: "GitHub",
+    handle: "Satwik2217",
+    url: socialLinks.github,
+    statLabel: "Repositories",
+    statValue: 30,
+    isPlaceholder: true,
+  },
+  {
+    name: "LeetCode",
+    handle: "Satwik_2217",
+    url: socialLinks.leetcode,
+    statLabel: "Problems Solved",
+    statValue: 120,
+    isPlaceholder: true,
+  },
+  {
+    name: "HackerRank",
+    handle: "satwikmishra2217",
+    url: socialLinks.hackerrank,
+    statLabel: "Badges",
+    statValue: 6,
+    isPlaceholder: true,
+  },
+  {
+    name: "GeeksforGeeks",
+    handle: "satwikmishra2217",
+    url: socialLinks.geeksforgeeks,
+    statLabel: "Problems Solved",
+    statValue: 40,
+    isPlaceholder: true,
+  },
+  {
+    name: "Codeforces",
+    handle: "coming soon",
+    url: "#",
+    statLabel: "Rating",
+    statValue: 0,
+    isPlaceholder: true,
+  },
+];
+
+export const certifications = [
+  {
+    title: "Web Development Intern — MERN Stack",
+    issuer: "Udemy Training Programme",
+    year: "2025",
+  },
+  {
+    title: "Java Intern",
+    issuer: "United Institute of Technology",
+    year: "2024",
+  },
+  {
+    title: "3-Star Java & 2-Star Python",
+    issuer: "HackerRank",
+    year: "2024",
+  },
+];
+
+export const blogPosts = [
+  {
+    number: "001",
+    title: "Weaving RAG Into Production",
+    excerpt:
+      "A behind-the-scenes look at how Contract Guard AI turns legal documents into searchable intelligence.",
+    tag: "AI / Engineering",
+    date: "COMING SOON",
+    isPlaceholder: true,
+  },
+  {
+    number: "002",
+    title: "The Web Slinger's Stack",
+    excerpt:
+      "Why I choose React, Node and FastAPI — and how I decide when a tool earns its place on the web.",
+    tag: "Full Stack",
+    date: "COMING SOON",
+    isPlaceholder: true,
+  },
+  {
+    number: "003",
+    title: "Swinging Into Creative Coding",
+    excerpt:
+      "Three.js, MediaPipe and the joy of building interfaces that move like they're alive.",
+    tag: "Creative Coding",
+    date: "COMING SOON",
+    isPlaceholder: true,
+  },
+];
+
+export const footerQuote =
+  "Every line of code is a thread in the web of what's possible.";
+
 export const projects = [
   {
     id: 1,
@@ -207,8 +375,13 @@ export const techStack = [
 ];
 
 export const navItems = [
-  { id: "work", label: "Work" },
-  { id: "experience", label: "Experience" },
-  { id: "about", label: "About" },
-  { id: "contact", label: "Contact" },
+  { id: "hero", label: "Home" },
+  { id: "about", label: "Secret Identity", theme: "Identity" },
+  { id: "education", label: "Origin Story", theme: "Origin" },
+  { id: "skills", label: "Spider Powers", theme: "Powers" },
+  { id: "work", label: "Completed Missions", theme: "Missions" },
+  { id: "experience", label: "Hero Log", theme: "Hero Log" },
+  { id: "achievements", label: "Hall of Heroes", theme: "Heroes" },
+  { id: "blog", label: "Daily Bugle", theme: "Bugle" },
+  { id: "contact", label: "Call the Hero", theme: "Contact" },
 ];

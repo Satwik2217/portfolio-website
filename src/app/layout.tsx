@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Bangers } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,22 +16,30 @@ const jetbrainsMono = JetBrains_Mono({
   preload: false,
 });
 
+const bangers = Bangers({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-bangers",
+  display: "swap",
+  preload: true,
+});
+
 export const metadata: Metadata = {
-  title: "Satwik Mishra — Full-Stack Developer & AI Engineer",
+  title: "Satwik Mishra — Friendly Neighborhood Developer",
   description:
-    "Satwik Mishra is a computer science student and developer building full-stack applications, AI systems, and interactive web experiences.",
+    "Satwik Mishra is a computer science student and full-stack developer building AI systems, web applications, and interactive experiences.",
   openGraph: {
-    title: "Satwik Mishra — Full-Stack Developer & AI Engineer",
+    title: "Satwik Mishra — Friendly Neighborhood Developer",
     description:
-      "Satwik Mishra is a computer science student and developer building full-stack applications, AI systems, and interactive web experiences.",
+      "Computer Science student. Full-Stack Developer. AI Enthusiast. Explore the missions, powers and hero log of Satwik Mishra.",
     type: "website",
     locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Satwik Mishra — Full-Stack Developer & AI Engineer",
+    title: "Satwik Mishra — Friendly Neighborhood Developer",
     description:
-      "Satwik Mishra is a computer science student and developer building full-stack applications, AI systems, and interactive web experiences.",
+      "Computer Science student. Full-Stack Developer. AI Enthusiast.",
   },
   robots: {
     index: true,
@@ -43,9 +51,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${jetbrainsMono.variable} ${bangers.variable}`}
+    >
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any" />
       </head>
       <body className="overflow-x-hidden antialiased">{children}</body>
     </html>
